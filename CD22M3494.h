@@ -2,6 +2,12 @@
 #define CD22M3494_H
 
 #include <mbed.h>
+
+#include <map>
+//using std::map;
+#include <string>
+//using std::string;
+
 /*
 X ADDRESS 
 AX3 AX2 AX1 AX0 X SWITCH 
@@ -119,13 +125,39 @@ public:
         }
         return false;
     }
-
+    
+    void associate(string name, unsigned short xp1, unsigned short xp2) {
+        unsigned short xps[2];
+        xps[0] = xp1;
+        xps[1] = xp2;
+        associationTable[name] = xps;
+    }
+    
+    bool routeAssociations(string src, string dst) {
+        if (associationTable.count(src) && associationTable.count(dst)) {
+            crossPointConnect(associationTable[src][0], associationTable[dst][1]);
+            crossPointConnect(associationTable[src][0], associationTable[dst][1]);
+            return true;
+        }
+        return false;    
+    }
+    
+    bool unRouteAssociations(string src, string dst) {
+        if (associationTable.count(src) && associationTable.count(dst)) {
+            crossPointDisconnect(associationTable[src][0], associationTable[dst][1]);
+            crossPointDisconnect(associationTable[src][0], associationTable[dst][1]);
+            return true;
+        }
+        return false;            
+    }
+    
 private:
     BusOut* xbus;
     BusOut* ybus;
     DigitalOut* data;
     DigitalOut* strobe;
-    DigitalOut* reset;       
+    DigitalOut* reset;      
+    map<string, unsigned short*> associationTable; 
 };
 
 
