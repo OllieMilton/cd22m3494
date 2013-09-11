@@ -150,6 +150,15 @@ public:
         return false;            
     }
     
+    bool getAssociation(string name, unsigned short *xps) {
+        if (associationTable.count(name)) {
+            xps[0] = associationTable[name][0];
+            xps[1] = associationTable[name][1];
+            return true;
+        }
+        return false;
+    }
+    
 private:
     BusOut *xbus;
     BusOut *ybus;
