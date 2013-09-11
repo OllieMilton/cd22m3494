@@ -2,11 +2,8 @@
 #define CD22M3494_H
 
 #include <mbed.h>
-
 #include <map>
-//using std::map;
 #include <string>
-//using std::string;
 
 /*
 X ADDRESS 
@@ -92,6 +89,8 @@ public:
         delete data;
         delete strobe;
         delete reset;
+        associationTable.clear();
+        delete &associationTable;
     }
     
     bool crossPointConnect(unsigned short x, unsigned short y) {
@@ -127,7 +126,7 @@ public:
     }
     
     void associate(string name, unsigned short xp1, unsigned short xp2) {
-        unsigned short xps[2];
+        unsigned short *xps = new unsigned short[2];
         xps[0] = xp1;
         xps[1] = xp2;
         associationTable[name] = xps;
@@ -135,8 +134,8 @@ public:
     
     bool routeAssociations(string src, string dst) {
         if (associationTable.count(src) && associationTable.count(dst)) {
-            crossPointConnect(associationTable[src][0], associationTable[dst][1]);
-            crossPointConnect(associationTable[src][0], associationTable[dst][1]);
+            crossPointConnect(associationTable[src][0], associationTable[dst][0]);
+            crossPointConnect(associationTable[src][1], associationTable[dst][1]);
             return true;
         }
         return false;    
@@ -144,19 +143,19 @@ public:
     
     bool unRouteAssociations(string src, string dst) {
         if (associationTable.count(src) && associationTable.count(dst)) {
-            crossPointDisconnect(associationTable[src][0], associationTable[dst][1]);
-            crossPointDisconnect(associationTable[src][0], associationTable[dst][1]);
+            crossPointDisconnect(associationTable[src][0], associationTable[dst][0]);
+            crossPointDisconnect(associationTable[src][1], associationTable[dst][1]);
             return true;
         }
         return false;            
     }
     
 private:
-    BusOut* xbus;
-    BusOut* ybus;
-    DigitalOut* data;
-    DigitalOut* strobe;
-    DigitalOut* reset;      
+    BusOut *xbus;
+    BusOut *ybus;
+    DigitalOut *data;
+    DigitalOut *strobe;
+    DigitalOut *reset;      
     map<string, unsigned short*> associationTable; 
 };
 
