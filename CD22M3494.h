@@ -94,6 +94,8 @@ AY2 AY1 AY0 Y SWITCH
 #define MAX_X 0x0F
 #define MAX_Y 0x7
 
+/**A driver for the CD22M3494 crosspoint switch matrix.
+ */
 class CD22M3494 {
 
 public:
