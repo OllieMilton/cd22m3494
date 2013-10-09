@@ -94,6 +94,12 @@ AY2 AY1 AY0 Y SWITCH
 #define MAX_X 0x0F
 #define MAX_Y 0x7
 
+struct Association {
+    string name;
+    string xp1;
+    string xp2;
+};
+    
 /**A driver for the CD22M3494 crosspoint switch matrix.
  */
 class CD22M3494 {
@@ -157,7 +163,7 @@ public:
         associationTable.clear();
         delete &associationTable;
     }
-    
+        
     /**Closes the switch at the given cross point.
      *
      * @param x the x axis
@@ -212,7 +218,9 @@ public:
             assoc->xp1 = xp1;
             assoc->xp2 = xp2;
             associationTable[name] = assoc;
+            return true;
         }
+        return false;
     }
     
     /**Connects all the crosspoints for the given associations.
@@ -242,18 +250,17 @@ public:
         }
         return false;            
     }
-        
+    
+    Association* getAssociation(string name) {
+        return associationTable[name];
+    }
+            
 private:
     BusOut *xbus;
     BusOut *ybus;
     DigitalOut *data;
     DigitalOut *obe;
-    DigitalOut *reset;  
-    struct Association {
-        string name;
-        string xp1;
-        string xp2;
-    };    
+    DigitalOut *reset;    
     map<string, Association*> associationTable;
     map<string, unsigned short> crosspointLookup; 
 };
