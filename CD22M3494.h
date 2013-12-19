@@ -5,6 +5,9 @@
 #include <map>
 #include <string>
 
+#define DEBUG
+#include "hl_debug.h"
+
 /*
 X ADDRESS 
 AX3 AX2 AX1 AX0 X SWITCH 
@@ -73,14 +76,14 @@ AY2 AY1 AY0 Y SWITCH
  1   1   1    Y7
 */
 
-#define Y0I 0x0
-#define Y1I 0x1
-#define Y2I 0x2
-#define Y3I 0x3
-#define Y4I 0x4
-#define Y5I 0x5
-#define Y6I 0x6
-#define Y7I 0x7
+#define Y0I 0x00
+#define Y1I 0x01
+#define Y2I 0x02
+#define Y3I 0x03
+#define Y4I 0x04
+#define Y5I 0x05
+#define Y6I 0x06
+#define Y7I 0x07
 
 #define Y0 "Y0"
 #define Y1 "Y1"
@@ -92,7 +95,7 @@ AY2 AY1 AY0 Y SWITCH
 #define Y7 "Y7"
 
 #define MAX_X 0x0F
-#define MAX_Y 0x7
+#define MAX_Y 0x07
 
 struct Association {
     string name;
@@ -119,9 +122,9 @@ public:
      * @param str the pin name for the strobe bus
      * @param rs the pin name for reset.
      */
-    CD22M3494(PinName x0, PinName x1, PinName x2, PinName x3, PinName y0, PinName y1, PinName y2, PinName d, PinName str, PinName rs) {
+    CD22M3494(PinName x0, PinName x1, PinName x2, PinName x3, PinName y01, PinName y11, PinName y2, PinName d, PinName str, PinName rs) {
         xbus = new BusOut(x0, x1, x2, x3);
-        ybus = new BusOut(y0, y1, y2);
+        ybus = new BusOut(y01, y11, y2);
         data = new DigitalOut(d);
         obe = new DigitalOut(str);
         reset = new DigitalOut(rs);
@@ -163,6 +166,21 @@ public:
         associationTable.clear();
         delete &associationTable;
     }
+    
+    const char *byte_to_binary(int x)
+    {
+        static char b[9];
+        b[0] = '\0';
+    
+        int z;
+        for (z = 128; z > 0; z >>= 1)
+        {
+            strcat(b, ((x & z) == z) ? "1" : "0");
+        }
+    
+        return b;
+    }
+
         
     /**Closes the switch at the given cross point.
      *
@@ -170,18 +188,24 @@ public:
      * @param y the y axis
      */
     bool crossPointConnect(unsigned short x, unsigned short y) {
+        INFO("Got x point connect for x %s, y %s", byte_to_binary(x), byte_to_binary(y));
         if (x <= MAX_X && y <= MAX_Y) {
+            INFO("setting data high...");
             data->write(1);
+            INFO("writing x...");
             xbus->write(x);
+            INFO("writing y...");
             ybus->write(y);
             // let the data busses settle before setting obe high
             wait_us(2);
             obe->write(1);
             // obe must be high for at least 20 ns
             wait_us(1);
-            obe->write(0);       
+            obe->write(0); 
+            INFO("Done");
             return true; 
         }
+        INFO("Error");
         return false;
     }
 
@@ -191,9 +215,13 @@ public:
      * @param y the y axis
      */
     bool crossPointDisconnect(unsigned short x, unsigned short y) {
+        INFO("Got x point disconnect for x %s, y %s", byte_to_binary(x), byte_to_binary(y));
         if (x <= MAX_X && y <= MAX_Y) {
+            INFO("setting data high...");
             data->write(0);
+            INFO("writing x...");
             xbus->write(x);
+            INFO("writing y...");
             ybus->write(y);
             // let the data busses settle before setting obe high
             wait_us(2);
@@ -201,8 +229,10 @@ public:
             // obe must be high for at least 20 ns
             wait_us(1);
             obe->write(0);
+            INFO("Done");
             return true;        
         }
+        INFO("Error");
         return false;
     }
     
