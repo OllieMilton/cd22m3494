@@ -122,9 +122,9 @@ public:
      * @param str the pin name for the strobe bus
      * @param rs the pin name for reset.
      */
-    CD22M3494(PinName x0, PinName x1, PinName x2, PinName x3, PinName y01, PinName y11, PinName y2, PinName d, PinName str, PinName rs) {
+    CD22M3494(PinName x0, PinName x1, PinName x2, PinName x3, PinName y0, PinName y1, PinName y2, PinName d, PinName str, PinName rs) {
         xbus = new BusOut(x0, x1, x2, x3);
-        ybus = new BusOut(y01, y11, y2);
+        ybus = new BusOut(y0, y1, y2);
         data = new DigitalOut(d);
         obe = new DigitalOut(str);
         reset = new DigitalOut(rs);
