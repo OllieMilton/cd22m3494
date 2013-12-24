@@ -188,7 +188,7 @@ public:
      * @param y the y axis
      */
     bool crossPointConnect(unsigned short x, unsigned short y) {
-        INFO("Got x point connect for x %s, y %s", byte_to_binary(x), byte_to_binary(y));
+       // INFO("Got x point connect for x %s, y %s", byte_to_binary(x), byte_to_binary(y));
         if (x <= MAX_X && y <= MAX_Y) {
             INFO("setting data high...");
             data->write(1);
@@ -215,7 +215,7 @@ public:
      * @param y the y axis
      */
     bool crossPointDisconnect(unsigned short x, unsigned short y) {
-        INFO("Got x point disconnect for x %s, y %s", byte_to_binary(x), byte_to_binary(y));
+       // INFO("Got x point disconnect for x %s, y %s", byte_to_binary(x), byte_to_binary(y));
         if (x <= MAX_X && y <= MAX_Y) {
             INFO("setting data high...");
             data->write(0);
