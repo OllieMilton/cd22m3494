@@ -165,30 +165,15 @@ public:
         delete reset;
         associationTable.clear();
         delete &associationTable;
-    }
-    
-    const char *byte_to_binary(int x)
-    {
-        static char b[9];
-        b[0] = '\0';
-    
-        int z;
-        for (z = 128; z > 0; z >>= 1)
-        {
-            strcat(b, ((x & z) == z) ? "1" : "0");
-        }
-    
-        return b;
-    }
+    }  
 
-        
     /**Closes the switch at the given cross point.
      *
      * @param x the x axis
      * @param y the y axis
      */
     bool crossPointConnect(unsigned short x, unsigned short y) {
-       // INFO("Got x point connect for x %s, y %s", byte_to_binary(x), byte_to_binary(y));
+        INFO("Got x point connect for x %d, y %d", x, y);
         if (x <= MAX_X && y <= MAX_Y) {
             INFO("setting data high...");
             data->write(1);
@@ -215,7 +200,7 @@ public:
      * @param y the y axis
      */
     bool crossPointDisconnect(unsigned short x, unsigned short y) {
-       // INFO("Got x point disconnect for x %s, y %s", byte_to_binary(x), byte_to_binary(y));
+        INFO("Got x point disconnect for x %d, y %d", x, y);
         if (x <= MAX_X && y <= MAX_Y) {
             INFO("setting data high...");
             data->write(0);
