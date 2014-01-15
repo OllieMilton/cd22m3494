@@ -111,13 +111,13 @@ public:
 
     /**Conucts a new CD22M3494 object
      *
-     * @param x0 the pin name for the first byte of the x axis address
-     * @param x1 the pin name for the second byte of the x axis address
-     * @param x2 the pin name for the thrid byte of the x axis address
-     * @param x3 the pin name for the forth byte of the x axis address
-     * @param y0 the pin name for the first byte of the y axis address
-     * @param y1 the pin name for the second byte of the y axis address
-     * @param y2 the pin name for the thrid byte of the y axis address
+     * @param x0 the pin name for the first bit of the x axis address
+     * @param x1 the pin name for the second bit of the x axis address
+     * @param x2 the pin name for the thrid bit of the x axis address
+     * @param x3 the pin name for the forth bit of the x axis address
+     * @param y0 the pin name for the first bit of the y axis address
+     * @param y1 the pin name for the second bit of the y axis address
+     * @param y2 the pin name for the thrid bit of the y axis address
      * @param d the pin name for the data bus
      * @param str the pin name for the strobe bus
      * @param rs the pin name for reset.
@@ -126,10 +126,10 @@ public:
         xbus = new BusOut(x0, x1, x2, x3);
         ybus = new BusOut(y0, y1, y2);
         data = new DigitalOut(d);
-        obe = new DigitalOut(str);
+        strobe = new DigitalOut(str);
         reset = new DigitalOut(rs);
         data->write(0);
-        obe->write(0);
+        strobe->write(0);
         reset->write(0);
         crosspointLookup[X0] = X0I;
         crosspointLookup[X1] = X1I;
@@ -161,7 +161,7 @@ public:
         delete xbus;
         delete ybus;
         delete data;
-        delete obe;
+        delete strobe;
         delete reset;
         associationTable.clear();
         delete &associationTable;
@@ -183,10 +183,10 @@ public:
             ybus->write(y);
             // let the data busses settle before setting obe high
             wait_us(2);
-            obe->write(1);
+            strobe->write(1);
             // obe must be high for at least 20 ns
             wait_us(1);
-            obe->write(0); 
+            strobe->write(0); 
             INFO("Done");
             return true; 
         }
@@ -210,10 +210,10 @@ public:
             ybus->write(y);
             // let the data busses settle before setting obe high
             wait_us(2);
-            obe->write(1);
+            strobe->write(1);
             // obe must be high for at least 20 ns
             wait_us(1);
-            obe->write(0);
+            strobe->write(0);
             INFO("Done");
             return true;        
         }
@@ -274,7 +274,7 @@ private:
     BusOut *xbus;
     BusOut *ybus;
     DigitalOut *data;
-    DigitalOut *obe;
+    DigitalOut *strobe;
     DigitalOut *reset;    
     map<string, Association*> associationTable;
     map<string, unsigned short> crosspointLookup; 
