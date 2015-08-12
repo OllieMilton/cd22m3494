@@ -109,7 +109,7 @@ class CD22M3494 {
 
 public:
 
-    /**Conucts a new CD22M3494 object
+    /**Constructs a new CD22M3494 object
      *
      * @param x0 the pin name for the first bit of the x axis address
      * @param x1 the pin name for the second bit of the x axis address
