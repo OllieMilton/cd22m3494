@@ -5,8 +5,8 @@
 #include <map>
 #include <string>
 
-#define DEBUG
-#include "hl_debug.h"
+#define LOG_LEVEL_INFO
+#include "logger.h"
 
 /*
 X ADDRESS 
